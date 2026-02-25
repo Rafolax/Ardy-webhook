@@ -1,23 +1,27 @@
 from flask import Flask, jsonify
 import requests
+import os
 
 app = Flask(__name__)
 
-# Your RSN and lap calculation settings
-RSN = "rafolax"
-BASE_XP = 4458457  # XP already done
-XP_PER_LAP = 889
-AGILITY_INDEX = 17  # 18th skill in OSRS index_lite.ws (0-based)
+# =========================
+# Settings
+# =========================
+RSN = "Rafolax"          # Your RuneScape username
+BASE_XP = 4458457        # XP you already completed (from previous laps)
+XP_PER_LAP = 889         # XP per 1 Ardougne Rooftop lap
+AGILITY_INDEX = 17       # 18th skill in index_lite.ws (0-based)
+# =========================
 
 @app.route("/ardy")
 def ardy_laps():
-    # Fetch your hiscores lite file
+    # Fetch hiscores
     url = f"https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player={RSN}"
     r = requests.get(url)
     if r.status_code != 200:
         return jsonify({"error": "Could not fetch hiscores"}), 500
 
-    # Split the file by commas (single-line hiscores)
+    # Split by commas (single-line hiscores file)
     data = r.text.split(",")
     try:
         agility_xp = int(data[AGILITY_INDEX*2 + 1])  # XP is second number in pair
@@ -31,8 +35,9 @@ def ardy_laps():
 
     return jsonify({"laps": laps})
 
-import os
-
+# =========================
+# Dynamic port for Render
+# =========================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
+    port = int(os.environ.get("PORT", 10000))  # Use Render-assigned port
     app.run(host="0.0.0.0", port=port)
