@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 import requests
 
-app = Flask(name)
+app = Flask(__name__)
 
 RSN = "Rafolax"
 BASE_XP = 4458457
@@ -27,5 +27,5 @@ def ardy_laps():
 
     return jsonify({"laps": laps})
 
-if name == "main":
+if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
