@@ -20,11 +20,11 @@ def ardy_laps():
     if r.status_code != 200:
         return jsonify({"error": "Could not fetch hiscores"}), 500
 
-    # Split by commas (single-line hiscores file)
-    data = r.text.split(",")
+    # Split by commas and remove spaces
+    data = [x.strip() for x in r.text.split(",")]
 
     try:
-        # Agility XP is the 37th number (0-based index 36)
+        # Agility XP is the 37th number
         agility_xp = int(data[36])
     except (IndexError, ValueError):
         return jsonify({"error": "Agility XP not found"}), 500
