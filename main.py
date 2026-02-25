@@ -8,9 +8,8 @@ app = Flask(__name__)
 # Settings
 # =========================
 RSN = "Rafolax"          # Your RuneScape username
-BASE_XP = 4458457        # XP you already completed (from previous laps)
+BASE_XP = 4458457        # XP already completed (from previous laps)
 XP_PER_LAP = 889         # XP per 1 Ardougne Rooftop lap
-AGILITY_INDEX = 17       # 18th skill in index_lite.ws (0-based)
 # =========================
 
 @app.route("/ardy")
@@ -23,8 +22,10 @@ def ardy_laps():
 
     # Split by commas (single-line hiscores file)
     data = r.text.split(",")
+
     try:
-        agility_xp = int(data[AGILITY_INDEX*2 + 1])  # XP is second number in pair
+        # Agility XP is the 37th number (0-based index 36)
+        agility_xp = int(data[36])
     except (IndexError, ValueError):
         return jsonify({"error": "Agility XP not found"}), 500
 
