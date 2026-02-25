@@ -23,10 +23,18 @@ def ardy_laps():
     # Split by commas and remove spaces
     data = [x.strip() for x in r.text.split(",")]
 
-    try:
-        # Agility XP is the 37th number
-        agility_xp = int(data[36])
-    except (IndexError, ValueError):
+    # Find the first XP number greater than BASE_XP
+    agility_xp = None
+    for x in data:
+        try:
+            val = int(x)
+            if val > BASE_XP:
+                agility_xp = val
+                break
+        except ValueError:
+            continue
+
+    if agility_xp is None:
         return jsonify({"error": "Agility XP not found"}), 500
 
     # Calculate laps
